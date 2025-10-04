@@ -66,7 +66,7 @@ def test_load_recipe_context() -> None:
         "version": "0.2.3",
         "name_version": "${{ name }}-${{ version }}",
         "version_length": '${{ version | split(".") | length }}',
-        "version_length_str": '\'${{ version | split(".") | length }}\'',        
+        "version_length_str": "'${{ version | split(\".\") | length }}'",
     }
 
     loaded_context = load_recipe_context(context, jinja_env())
