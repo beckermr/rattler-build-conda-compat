@@ -99,7 +99,7 @@ def load_recipe_context(context: dict[str, str], jinja_env: jinja2.Environment) 
         if isinstance(value, str):
             template = jinja_env.from_string(value)
             rendered_value = template.render(context)
-            context[key] = rendered_value
+            context[key] = load_yaml("value: " + rendered_value)["value"]
 
     return context
 

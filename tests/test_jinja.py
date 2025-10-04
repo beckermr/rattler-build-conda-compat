@@ -3,7 +3,11 @@ from __future__ import annotations
 from pathlib import Path
 
 from rattler_build_conda_compat.jinja.filters import _version_to_build_string
-from rattler_build_conda_compat.jinja.jinja import render_recipe_with_context
+from rattler_build_conda_compat.jinja.jinja import (
+    jinja_env,
+    load_recipe_context,
+    render_recipe_with_context,
+)
 from rattler_build_conda_compat.jinja.utils import _MissingUndefined
 from rattler_build_conda_compat.loader import load_yaml
 from rattler_build_conda_compat.yaml import _dump_yaml_to_string
@@ -54,3 +58,20 @@ def test_context_rendering(snapshot) -> None:
     into_yaml = _dump_yaml_to_string(rendered)
 
     assert into_yaml == snapshot
+
+
+def test_load_recipe_context() -> None:
+    context = {
+        "name": "foo",
+        "version": "0.2.3",
+        "name_version": "${{ name }}-${{ version }}",
+        "version_length": '${{ version | split(".") | length }}',
+    }
+
+    loaded_context = load_recipe_context(context, jinja_env())
+    assert loaded_context == {
+        "name": "foo",
+        "version": "0.2.3",
+        "name_version": "foo-0.2.3",
+        "version_length": 3,
+    }
